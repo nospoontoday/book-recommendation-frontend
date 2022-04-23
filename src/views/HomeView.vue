@@ -4,18 +4,29 @@
       <template slot-scope="{ result: { data, loading } }">
         <div v-if="loading">Loading . . .</div>
         <div v-else>
-          <a href="#" v-for="category of data.categories" :key="category.id" class="link-margin">
+          <a href="#" v-for="category of data.categories" :key="category.id" class="link-margin" @click="selectCategory(category.id)">
             {{ category.id }}. {{ category.name }}
           </a>
         </div>
       </template>
     </ApolloQuery>
 
-    <ApolloQuery :query ="require('@/graphql/queries/Books.gql')">
+    <!-- <ApolloQuery :query ="require('@/graphql/queries/Books.gql')">
       <template slot-scope="{ result: { data, loading } }">
         <div v-if="loading">Loading . . .</div>
         <div v-else>
           <div v-for="book of data.books" :key="book.id">
+            {{ book.id }}. {{ book.title }}
+          </div>
+        </div>
+      </template>
+    </ApolloQuery> -->
+
+    <ApolloQuery :query ="require('@/graphql/queries/Category.gql')" :variables="{ id: selectedCategory }">
+      <template slot-scope="{ result: { data, loading } }">
+        <div v-if="loading">Loading . . .</div>
+        <div v-else>
+          <div v-for="book of data.category.books" :key="book.id">
             {{ book.id }}. {{ book.title }}
           </div>
         </div>
@@ -35,6 +46,7 @@ export default {
   },
   data() {
     return {
+      selectedCategory: 1,
       categories: []
     }
   },
@@ -46,6 +58,12 @@ export default {
       }
     }`,
   },
+
+  methods: {
+    selectCategory(category) {
+      this.selectedCategory = category
+    }
+  }
 }
 </script>
 
